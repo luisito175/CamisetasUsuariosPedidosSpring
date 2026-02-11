@@ -27,6 +27,22 @@ function wireEvents() {
     crearPedido();
   });
 
+  // Menú de navegación
+  $("#menu_camisetas").on("click", function () {
+    $(".panel").addClass("d-none");
+    $("#panel_camisetas").removeClass("d-none");
+  });
+
+  $("#menu_usuarios").on("click", function () {
+    $(".panel").addClass("d-none");
+    $("#panel_usuarios").removeClass("d-none");
+  });
+
+  $("#menu_pedidos").on("click", function () {
+    $(".panel").addClass("d-none");
+    $("#panel_pedidos").removeClass("d-none");
+  });
+
 }
 
 /* =========================
@@ -350,3 +366,9 @@ function construirUsuariosMap() {
 
   return map;
 }
+
+// Iniciar cuando el DOM está listo
+$(document).ready(function () {
+  wireEvents();
+  cargarTodo();
+});

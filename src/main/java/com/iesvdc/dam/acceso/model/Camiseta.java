@@ -1,6 +1,7 @@
 package com.iesvdc.dam.acceso.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,10 +27,10 @@ public class Camiseta {
   @NotBlank(message = "El color es obligatorio")
   private String color;
 
-  @NotBlank(message = "El precio es obligatorio")
+  @Positive(message = "El precio debe ser mayor a 0")
   private double precio;
 
-  @NotBlank(message = "El precio es obligatorio")
+  @Positive(message = "El stock debe ser mayor a 0")
   private int stock;
 
 
