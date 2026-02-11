@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Camiseta {
 
   @Id
-  private String id;
+  private ObjectId id;
 
   @NotBlank(message = "El nombre es obligatorio")
   private String nombre;
@@ -39,7 +40,7 @@ public class Camiseta {
 
   // Constructor necesario para maestro-detalle Horario->Instalación
   public Camiseta(String id){
-    this.id=id;
+    this.id = new ObjectId(id);
     this.nombre="Instalación sin nombre";
     this.talla="Instalación sin talla";
     this.color="Instalación sin color";

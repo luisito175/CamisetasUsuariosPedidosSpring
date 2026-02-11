@@ -3,6 +3,7 @@ package com.iesvdc.dam.acceso.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +22,21 @@ public class InstalacionService {
     }
 
     public Optional<Camiseta> findById(String id){
-        return instalacionRepository.findById(id);
+        try {
+            return instalacionRepository.findById(new ObjectId(id));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 
     public Camiseta save(Camiseta instalacion){
-        if (instalacion.getId().length()<5) {
-            instalacion.setId(null);
-        }
+        // Si el id es null, MongoDB lo generará automáticamente
         return instalacionRepository.save(instalacion);
     }
 
     public void delete(Camiseta instalacion){
         if (instalacion.getId()!=null){
-            deleteById(instalacion.getId());
+            deleteById(instalacion.getId().toString());
         } else {
             throw new NotFoundException(
                 "Instalación sin ID, no puedo buscarla.");
@@ -42,7 +45,7 @@ public class InstalacionService {
 
     public void deleteById(String id){
         if (findById(id).isPresent()){
-            instalacionRepository.deleteById(id);
+            instalacionRepository.deleteById(new ObjectId(id));
         } else {
             throw new NotFoundException(
                 "Instalación no encontrada: " + id);
@@ -52,7 +55,7 @@ public class InstalacionService {
     public Camiseta updateById(String id, Camiseta instalacion){
         Optional<Camiseta> oInstalacion = findById(id);
         if(oInstalacion.isPresent()){
-            instalacion.setId(id);
+            instalacion.setId(new ObjectId(id));
             return instalacionRepository.save(instalacion);
         } else {
             throw new NotFoundException(
@@ -61,7 +64,7 @@ public class InstalacionService {
     }
 
     public Camiseta updateById(Camiseta oldInstalacion, Camiseta instalacion){
-        return updateById(oldInstalacion.getId(), instalacion);
+        return updateById(oldInstalacion.getId().toString(), instalacion);
     }
 
 }
