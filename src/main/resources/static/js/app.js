@@ -111,8 +111,8 @@ function renderCamisetas(camisetas) {
         <td>${escapeHtml(c.nombre)}</td>
         <td>${escapeHtml(c.talla)}</td>
         <td>${escapeHtml(c.color)}</td>
-        <td>${escapeHtml(c.precio)}</td>
-        <td>${escapeHtml(c.stock)}</td>
+        <td>${parseFloat(c.precio).toFixed(2)}€</td>
+        <td>${c.stock}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-outline-danger" data-action="del-cam" data-id="${c.id}">
             Eliminar
@@ -170,7 +170,7 @@ function eliminarCamiseta(id) {
   if (!confirm("¿Eliminar la camiseta?")) return;
 
   $.ajax({
-    url: `${API.camisetas}/${id}`,
+    url: `${API.camisetas}/${id.toString()}`,
     method: "DELETE"
   })
     .done(function () {
