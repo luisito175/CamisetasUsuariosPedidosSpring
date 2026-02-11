@@ -14,7 +14,12 @@ const API = {
 function wireEvents() {
   $("#formCamisetas").on("submit", function (e) {
     e.preventDefault();
-    crearCamiseta();
+    const editId = $("#btnGuardar").data("edit-id");
+    if (editId) {
+      actualizarCamiseta(editId);
+    } else {
+      crearCamiseta();
+    }
   });
 
   $("#formUsuario").on("submit", function (e) {
@@ -114,6 +119,9 @@ function renderCamisetas(camisetas) {
         <td>${parseFloat(c.precio).toFixed(2)}€</td>
         <td>${c.stock}</td>
         <td class="text-end">
+          <button class="btn btn-sm btn-outline-warning" data-action="edit-cam" data-id="${c.id}">
+            Editar
+          </button>
           <button class="btn btn-sm btn-outline-danger" data-action="del-cam" data-id="${c.id}">
             Eliminar
           </button>
@@ -124,7 +132,13 @@ function renderCamisetas(camisetas) {
 
   $("#tablaCamisetas").html(rows || `<tr><td colspan="6" class="text-center text-muted">Sin datos</td></tr>`);
 
-  // Delegación de eventos para botones generados dinámicamente
+  // Botón Editar
+  $("#tablaCamisetas button[data-action='edit-cam']").off("click").on("click", function () {
+    const id = $(this).data("id");
+    editarCamiseta(id);
+  });
+
+  // Botón Eliminar
   $("#tablaCamisetas button[data-action='del-cam']").off("click").on("click", function () {
     const id = $(this).data("id");
     eliminarCamiseta(id);
@@ -159,10 +173,58 @@ function crearCamiseta() {
     .done(function () {
       showAlert("success", "Camiseta creada");
       $("#formCamisetas")[0].reset();
+      $("#btnGuardar").text("Añadir");
       cargarCamisetas();
     })
     .fail(function (xhr) {
       showAlert("danger", parseApiError(xhr, "Error creando camiseta"));
+    });
+}
+
+function editarCamiseta(id) {
+  
+  const camisetaRow = $(`button[data-action='edit-cam'][data-id='${id}']`).closest("tr");
+  
+  const nombre = camisetaRow.find("td").eq(0).text().trim();
+  const talla = camisetaRow.find("td").eq(1).text().trim();
+  const color = camisetaRow.find("td").eq(2).text().trim();
+  const precio = camisetaRow.find("td").eq(3).text().replace("€", "").trim();
+  const stock = camisetaRow.find("td").eq(4).text().trim();
+
+  
+  $("#camNombre").val(nombre);
+  $("#camTalla").val(talla);
+  $("#camColor").val(color);
+  $("#camPrecio").val(precio);
+  $("#camStock").val(stock);
+
+  
+  $("#btnGuardar").text("Actualizar").data("edit-id", id);
+}
+
+function actualizarCamiseta(id) {
+  const payload = {
+    nombre: $("#camNombre").val().trim(),
+    talla: $("#camTalla").val().trim(),
+    color: $("#camColor").val().trim(),
+    precio: parseFloat($("#camPrecio").val()),
+    stock: parseInt($("#camStock").val())
+  };
+
+  $.ajax({
+    url: `${API.camisetas}/${id}`,
+    method: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify(payload)
+  })
+    .done(function () {
+      showAlert("success", "Camiseta actualizada");
+      $("#formCamisetas")[0].reset();
+      $("#btnGuardar").text("Añadir").data("edit-id", null);
+      cargarCamisetas();
+    })
+    .fail(function (xhr) {
+      showAlert("danger", parseApiError(xhr, "Error actualizando camiseta"));
     });
 }
 

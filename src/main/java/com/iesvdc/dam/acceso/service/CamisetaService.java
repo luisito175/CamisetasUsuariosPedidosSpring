@@ -12,31 +12,31 @@ import com.iesvdc.dam.acceso.repository.CamisetaRepository;
 import com.iesvdc.dam.acceso.web.NotFoundException;
 
 @Service
-public class InstalacionService {
+public class CamisetaService {
     
     @Autowired
-    CamisetaRepository instalacionRepository;
+    CamisetaRepository CamisetaRepository;
 
     public List<Camiseta> findAll(){
-        return instalacionRepository.findAll();
+        return CamisetaRepository.findAll();
     }
 
     public Optional<Camiseta> findById(String id){
         try {
-            return instalacionRepository.findById(new ObjectId(id));
+            return CamisetaRepository.findById(new ObjectId(id));
         } catch (IllegalArgumentException e) {
             return Optional.empty();
         }
     }
 
-    public Camiseta save(Camiseta instalacion){
+    public Camiseta save(Camiseta camiseta){
         // Si el id es null, MongoDB lo generará automáticamente
-        return instalacionRepository.save(instalacion);
+        return CamisetaRepository.save(camiseta);
     }
 
-    public void delete(Camiseta instalacion){
-        if (instalacion.getId()!=null){
-            deleteById(instalacion.getId().toString());
+    public void delete(Camiseta camiseta){
+        if (camiseta.getId()!=null){
+            deleteById(camiseta.getId().toString());
         } else {
             throw new NotFoundException(
                 "Instalación sin ID, no puedo buscarla.");
@@ -45,26 +45,26 @@ public class InstalacionService {
 
     public void deleteById(String id){
         if (findById(id).isPresent()){
-            instalacionRepository.deleteById(new ObjectId(id));
+            CamisetaRepository.deleteById(new ObjectId(id));
         } else {
             throw new NotFoundException(
                 "Instalación no encontrada: " + id);
         }
     }
 
-    public Camiseta updateById(String id, Camiseta instalacion){
-        Optional<Camiseta> oInstalacion = findById(id);
-        if(oInstalacion.isPresent()){
-            instalacion.setId(new ObjectId(id));
-            return instalacionRepository.save(instalacion);
+    public Camiseta updateById(String id, Camiseta camiseta){
+        Optional<Camiseta> ocamiseta = findById(id);
+        if(ocamiseta.isPresent()){
+            camiseta.setId(new ObjectId(id));
+            return CamisetaRepository.save(camiseta);
         } else {
             throw new NotFoundException(
                 "Instalación no encontrada: " + id);
         }
     }
 
-    public Camiseta updateById(Camiseta oldInstalacion, Camiseta instalacion){
-        return updateById(oldInstalacion.getId().toString(), instalacion);
+    public Camiseta updateById(Camiseta oldcamiseta, Camiseta camiseta){
+        return updateById(oldcamiseta.getId().toString(), camiseta);
     }
 
 }

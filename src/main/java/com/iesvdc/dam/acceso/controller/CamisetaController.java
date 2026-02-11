@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iesvdc.dam.acceso.model.Camiseta;
-import com.iesvdc.dam.acceso.service.InstalacionService;
+import com.iesvdc.dam.acceso.service.CamisetaService;
 
 import jakarta.validation.Valid;
 
@@ -24,37 +24,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/instalaciones")
-public class InstalacionController {
+public class CamisetaController {
     
     @Autowired
-    private InstalacionService instalacionService;
+    private CamisetaService camisetaService;
 
     @GetMapping({"","/"})
     public List<Camiseta> findAll() {
-        return instalacionService.findAll();
+        return camisetaService.findAll();
     }
 
     @PostMapping({"","/"})
     @ResponseStatus(HttpStatus.CREATED)
     public Camiseta save(
         @Valid
-        @RequestBody Camiseta instalacion) {
+        @RequestBody Camiseta camiseta) {
          
-        return instalacionService.save(instalacion);
+        return camisetaService.save(camiseta);
     }
     
     @PutMapping("/{id}")
     public Camiseta update(
         @PathVariable String id,
-        @Valid @RequestBody Camiseta instalacion){
+        @Valid @RequestBody Camiseta camiseta){
             
-        return instalacionService.updateById(id, instalacion);
+        return camisetaService.updateById(id, camiseta);
     }
     
     
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String id){
-        instalacionService.deleteById(id);
+        camisetaService.deleteById(id);
     }
 }
