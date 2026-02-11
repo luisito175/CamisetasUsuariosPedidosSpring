@@ -2,7 +2,6 @@
 $(()=>{
 
     $.controller.init("#panel_inicio");
-    wireEvents();
-    cargarTodo();
+    // wireEvents() y cargarTodo() ya se llaman en app.js
 
 });
