@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.iesvdc.dam.acceso.model.Instalacion;
+import com.iesvdc.dam.acceso.model.Camiseta;
 import com.iesvdc.dam.acceso.service.InstalacionService;
 
 import jakarta.validation.Valid;
@@ -30,23 +30,23 @@ public class InstalacionController {
     private InstalacionService instalacionService;
 
     @GetMapping({"","/"})
-    public List<Instalacion> findAll() {
+    public List<Camiseta> findAll() {
         return instalacionService.findAll();
     }
 
     @PostMapping({"","/"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Instalacion save(
+    public Camiseta save(
         @Valid
-        @RequestBody Instalacion instalacion) {
+        @RequestBody Camiseta instalacion) {
          
         return instalacionService.save(instalacion);
     }
     
     @PutMapping("/{id}")
-    public Instalacion update(
+    public Camiseta update(
         @PathVariable String id,
-        @Valid @RequestBody Instalacion instalacion){
+        @Valid @RequestBody Camiseta instalacion){
             
         return instalacionService.updateById(id, instalacion);
     }

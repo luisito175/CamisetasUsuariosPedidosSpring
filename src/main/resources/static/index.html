@@ -13,17 +13,16 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="#">Reservas de Pistas</a>
+    <a class="navbar-brand" href="#">Tienda de camisetas</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="nav">
       <ul class="navbar-nav ms-auto">
-        <li id="menu_instalaciones" class="nav-item"><a class="nav-link" href="#instalaciones">Instalaciones</a></li>
-        <li id="menu_horarios" class="nav-item"><a class="nav-link" href="#horarios">horarios</a></li>
+        <li id="menu_instalaciones" class="nav-item"><a class="nav-link" href="#instalaciones">Camisetas</a></li>
         <li id="menu_usuarios" class="nav-item"><a class="nav-link" href="#usuarios">Usuarios</a></li>
-        <li id="menu_reservas" class="nav-item"><a class="nav-link" href="#reservas">Reservas</a></li>
+        <li id="menu_reservas" class="nav-item"><a class="nav-link" href="#reservas">Pedido</a></li>
       </ul>
     </div>
   </div>
@@ -51,7 +50,7 @@
   <!-- Instalaciones -->
   <section id="panel_instalaciones" class="mb-4 panel">
     <div class="card shadow-sm">
-      <div class="card-header fw-semibold">Instalaciones</div>
+      <div class="card-header fw-semibold">Camisetas</div>
       <div class="card-body">
 
         <form id="formInstalacion" class="row g-2 align-items-end">
@@ -93,48 +92,6 @@
         </div>
 
       </div>
-    </div>
-  </section>
-
-
-  <!-- Horarios -->
-  <section id="panel_horarios" class="mb-4 panel">
-    <div class="card shadow-sm">
-      <div class="card-header fw-semibold">Horarios</div>
-      <div class="card-body">
-        <form id="formHorario" class="row g-2 align-items-end">
-          <div class="col-md-5">
-            <label class="form-label">Instalación</label>
-            <select id="horInstalacion" class="form-select" required></select>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Inicio</label>
-            <input id="horHoraInicio" min="00:00:00" max="23:59:59" type="time" class="form-control" required>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Fin</label>
-            <input id="horHoraFin" type="time" class="form-control" required>
-          </div>
-          <div class="col-md-1 d-grid">
-            <button class="btn btn-primary" type="submit">Añadir</button>
-          </div>
-        </form>
-        <hr/>
-        <div class="table-responsive">
-          <table class="table table-hover align-middle">
-            <thead>
-              <tr>
-                <th>Nombre Instalacion</th>
-                <th>Hora inicio</th>
-                <th>Hora fin</th>
-                <th class="text-end">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tablaHorarios"></tbody>
-          </table>
-        </div>
-      </div>
-      
     </div>
   </section>
 
@@ -188,16 +145,13 @@
       <div class="card-body">
 
         
-        <!-- Alta de reserva -->
+        
         <form id="formReserva" class="row g-2 align-items-end">
           <div class="col-md-4">
             <label class="form-label">Usuario</label>
             <select id="resUsuario" class="form-select" required></select>
           </div>
-          <div class="col-md-4">
-            <label class="form-label">Horario</label>
-            <select id="resHorario" class="form-select" required></select>
-          </div>
+          
           <div class="col-md-2">
             <label class="form-label">Día</label>
             <input id="resDia" type="date" class="form-control" required>
@@ -215,7 +169,6 @@
             <thead>
               <tr>
                 <th>Día</th>
-                <th>Horario</th>
                 <th>Instalación</th>
                 <th>Usuario</th>
                 <th class="text-end">Acciones</th>

@@ -12,26 +12,38 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "instalaciones")
-public class Instalacion {
+public class Camiseta {
 
   @Id
   private String id;
 
-  @NotBlank(message = "nombre es obligatorio")
+  @NotBlank(message = "El nombre es obligatorio")
   private String nombre;
 
-  @NotBlank(message = "direccion es obligatoria")
-  private String direccion;
+  @NotBlank(message = "La talla es obligatoria")
+  private String talla;
 
-  @NotBlank(message = "ciudad es obligatoria")
-  private String ciudad;
+  @NotBlank(message = "El color es obligatorio")
+  private String color;
+
+  @NotBlank(message = "El precio es obligatorio")
+  private double precio;
+
+  @NotBlank(message = "El precio es obligatorio")
+  private int stock;
+
+
+
+
 
   // Constructor necesario para maestro-detalle Horario->Instalación
-  public Instalacion(String id){
+  public Camiseta(String id){
     this.id=id;
     this.nombre="Instalación sin nombre";
-    this.direccion="Instalación sin dirección";
-    this.ciudad="Instalación sin ciudad";
+    this.talla="Instalación sin talla";
+    this.color="Instalación sin color";
+    this.precio=0.0;
+    this.stock = 0;
   }
 
 }

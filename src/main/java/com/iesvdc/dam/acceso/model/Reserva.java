@@ -24,10 +24,6 @@ public class Reserva {
   @NotNull(message = "fechaReserva es obligatoria")
   private Instant fechaReserva;
 
-  @NotNull(message = "horario es obligatorio")
-  @Valid
-  private Horario horario;
-
   @NotBlank(message = "usuarioId es obligatorio")
   private String usuarioId;
 }

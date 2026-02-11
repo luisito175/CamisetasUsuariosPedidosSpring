@@ -1,10 +1,9 @@
 /* global $ */
 
 const API = {
-  instalaciones: "/api/instalaciones",
+  camisetas: "/api/instalaciones",
   usuarios: "/api/usuarios",
-  reservas: "/api/reservas",
-  horarios: "api/horarios"
+  pedido: "/api/reservas"
 };
 
 
@@ -13,9 +12,9 @@ const API = {
    ========================= */
 
 function wireEvents() {
-  $("#formInstalacion").on("submit", function (e) {
+  $("#formCamisetas").on("submit", function (e) {
     e.preventDefault();
-    crearInstalacion();
+    crearCamiseta();
   });
 
   $("#formUsuario").on("submit", function (e) {
@@ -23,19 +22,11 @@ function wireEvents() {
     crearUsuario();
   });
 
-  $("#formHorario").on("submit", function (e) {
+  $("#formPedido").on("submit", function (e) {
     e.preventDefault();
-    crearHorario();
+    crearPedido();
   });
 
-  $("#formReserva").on("submit", function (e) {
-    e.preventDefault();
-    crearReserva();
-  });
-
-  $("#menu_horarios").on("click", function (e) {
-    cargarHorarios();
-  });
 }
 
 /* =========================
@@ -73,9 +64,9 @@ function escapeHtml(s) {
    ========================= */
 
 function cargarTodo() {
-  $.when(cargarInstalaciones(), cargarUsuarios(), cargarHorarios())
+  $.when(cargarCamisetas(), cargarUsuarios())
     .done(function () {
-      cargarReservas();
+      cargarPedidos();
     })
     .fail(function () {
       showAlert("danger", "Error cargando datos iniciales");
@@ -83,29 +74,31 @@ function cargarTodo() {
 }
 
 /* =========================
-   Instalaciones
+   Camisetas
    ========================= */
 
-function cargarInstalaciones() {
-  return $.getJSON(API.instalaciones)
+function cargarCamisetas() {
+  return $.getJSON(API.camisetas)
     .done(function (data) {
-      renderInstalaciones(data);
-      rellenarSelectInstalaciones(data);
+      renderCamisetas(data);
+      rellenarSelectCamisetas(data);
     })
     .fail(function (xhr) {
-      showAlert("danger", parseApiError(xhr, "Error cargando instalaciones"));
+      showAlert("danger", parseApiError(xhr, "Error cargando camisetas"));
     });
 }
 
-function renderInstalaciones(instalaciones) {
-  const rows = (instalaciones || []).map(function (i) {
+function renderCamisetas(camisetas) {
+  const rows = (camisetas || []).map(function (c) {
     return `
       <tr>
-        <td>${escapeHtml(i.nombre)}</td>
-        <td>${escapeHtml(i.direccion)}</td>
-        <td>${escapeHtml(i.ciudad)}</td>
+        <td>${escapeHtml(c.nombre)}</td>
+        <td>${escapeHtml(c.talla)}</td>
+        <td>${escapeHtml(c.color)}</td>
+        <td>${escapeHtml(c.precio)}</td>
+        <td>${escapeHtml(c.stock)}</td>
         <td class="text-end">
-          <button class="btn btn-sm btn-outline-danger" data-action="del-inst" data-id="${i.id}">
+          <button class="btn btn-sm btn-outline-danger" data-action="del-cam" data-id="${c.id}">
             Eliminar
           </button>
         </td>
@@ -113,129 +106,66 @@ function renderInstalaciones(instalaciones) {
     `;
   }).join("");
 
-  $("#tablaInstalaciones").html(rows || `<tr><td colspan="4" class="text-center text-muted">Sin datos</td></tr>`);
+  $("#tablaCamisetas").html(rows || `<tr><td colspan="6" class="text-center text-muted">Sin datos</td></tr>`);
 
   // Delegación de eventos para botones generados dinámicamente
-  $("#tablaInstalaciones button[data-action='del-inst']").off("click").on("click", function () {
+  $("#tablaCamisetas button[data-action='del-cam']").off("click").on("click", function () {
     const id = $(this).data("id");
-    eliminarInstalacion(id);
+    eliminarCamiseta(id);
   });
 }
 
-function rellenarSelectInstalaciones(instalaciones) {
-  const opts = (instalaciones || []).map(i =>
-    `<option value="${i.id}">${escapeHtml(i.nombre)} (${escapeHtml(i.ciudad)})</option>`
+function rellenarSelectCamisetas(camisetas) {
+  const opts = (camisetas || []).map(c =>
+    `<option value="${c.id}">${escapeHtml(c.nombre)} (${escapeHtml(c.talla)})</option>`
   ).join("");
 
   // Selects: filtros y alta
-  $("#filtroInstalacion").html(`<option value="">Todas</option>${opts}`);
-  $("#resInstalacion").html(`<option value="" disabled selected>Seleccione...</option>${opts}`);
-  $("#horInstalacion").html(`<option value="" disabled selected>Seleccione...</option>${opts}`);
+  $("#filtroCamiseta").html(`<option value="">Todas</option>${opts}`);
+  $("#resCamiseta").html(`<option value="" disabled selected>Seleccione...</option>${opts}`);
 }
 
-function crearInstalacion() {
+function crearCamiseta() {
   const payload = {
-    id: $("#instID").val().trim(),
-    nombre: $("#instNombre").val().trim(),
-    direccion: $("#instDireccion").val().trim(),
-    ciudad: $("#instCiudad").val().trim()
+    nombre: $("#camNombre").val().trim(),
+    talla: $("#camTalla").val().trim(),
+    color: $("#camColor").val().trim(),
+    precio: parseFloat($("#camPrecio").val()),
+    stock: parseInt($("#camStock").val())
   };
 
   $.ajax({
-    url: API.instalaciones,
+    url: API.camisetas,
     method: "POST",
     contentType: "application/json",
     data: JSON.stringify(payload)
   })
     .done(function () {
-      showAlert("success", "Instalación creada");
-      $("#formInstalacion")[0].reset();
-      cargarInstalaciones();
+      showAlert("success", "Camiseta creada");
+      $("#formCamisetas")[0].reset();
+      cargarCamisetas();
     })
     .fail(function (xhr) {
-      showAlert("danger", parseApiError(xhr, "Error creando instalación"));
+      showAlert("danger", parseApiError(xhr, "Error creando camiseta"));
     });
 }
 
-/* =========================
-   horarios
-   ========================= */
-
-
-function cargarHorarios() {
-  console.log("recargando horarios...")
-  return $.getJSON(API.horarios)
-    .done(function (data) {
-      $('#tablaHorarios').empty();
-      console.log(data);      
-      $('#tablaHorarios').append(
-        (data || []).map(function (horario) {
-          return `
-            <tr>
-              <td>${escapeHtml(horario.instalacion.nombre)}</td>
-              <td>${escapeHtml(horario.horaInicio)}</td>
-              <td>${escapeHtml(horario.horaFin)}</td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-outline-danger" data-action="del-inst" data-id="${horario.id}">
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          `})
-      );
-      // Delegación de eventos para botones generados dinámicamente
-      $("#tablaHorarios button[data-action='del-inst']").off("click").on("click", function () {
-        const id = $(this).data("id");
-        eliminarHorario(id);
-      });
-    })
-    .fail(function (xhr) {
-      showAlert("danger", parseApiError(xhr, "Error cargando horarios"));
-    });
-}
-
-function crearHorario() {
-  const payload = {
-    //id: $("#instID").val().trim(),
-    instalacion: $("#horInstalacion").val(),
-    horaInicio: $("#horHoraInicio").val(),
-    horaFin: $("#horHoraFin").val(),
-  };
+function eliminarCamiseta(id) {
+  if (!confirm("¿Eliminar la camiseta?")) return;
 
   $.ajax({
-    url: API.horarios,
-    method: "POST",
-    contentType: "application/json",
-    data: JSON.stringify(payload)
-  })
-    .done(function () {
-      showAlert("success", "Horario creado");
-      $("#formHorario")[0].reset();
-      cargarHorarios();
-    })
-    .fail(function (xhr) {
-      showAlert("danger", parseApiError(xhr, "Error creando horario"));
-    });
-}
-
-
-
-
-function eliminarHorario(id) {
-  if (!confirm("¿Eliminar el horario?")) return;
-
-  $.ajax({
-    url: `${API.horarios}/${id}`,
+    url: `${API.camisetas}/${id}`,
     method: "DELETE"
   })
     .done(function () {
-      showAlert("success", "Horario eliminado");
-      cargarHorarios();
+      showAlert("success", "Camiseta eliminada");
+      cargarCamisetas();
     })
     .fail(function (xhr) {
-      showAlert("danger", parseApiError(xhr, "Error eliminando Horario"));
+      showAlert("danger", parseApiError(xhr, "Error eliminando camiseta"));
     });
 }
+
 
 /* =========================
    Usuarios
@@ -324,78 +254,69 @@ function eliminarUsuario(id) {
 }
 
 /* =========================
-   Reservas
+   Pedidos
    ========================= */
 
-function cargarReservas() {
-  return $.getJSON(API.reservas)
+function cargarPedidos() {
+  return $.getJSON(API.pedido)
     .done(function (data) {
-      renderReservas(data);
+      renderPedidos(data);
     })
     .fail(function (xhr) {
-      showAlert("danger", parseApiError(xhr, "Error cargando reservas"));
+      showAlert("danger", parseApiError(xhr, "Error cargando pedidos"));
     });
 }
 
-function crearReserva() {
+function crearPedido() {
   const payload = {
     usuarioId: $("#resUsuario").val(),
-    instalacionId: $("#resInstalacion").val(),
-    dia: $("#resDia").val(),
-    horaInicio: $("#resHoraInicio").val(),
-    horaFin: $("#resHoraFin").val()
+    fechaReserva: new Date().toISOString()
   };
 
   $.ajax({
-    url: API.reservas,
+    url: API.pedido,
     method: "POST",
     contentType: "application/json",
     data: JSON.stringify(payload)
   })
     .done(function () {
-      showAlert("success", "Reserva creada");
-      $("#formReserva")[0].reset();
+      showAlert("success", "Pedido creado");
+      $("#formPedido")[0].reset();
+      cargarPedidos();
     })
     .fail(function (xhr) {
-      // 409 típico por solape, 400 por validación, 404 por usuario/instalación inexistente
-      showAlert("danger", parseApiError(xhr, "Error creando reserva"));
+      showAlert("danger", parseApiError(xhr, "Error creando pedido"));
     });
 }
 
-function eliminarReserva(id) {
-  if (!confirm("¿Eliminar la reserva?")) return;
+function eliminarPedido(id) {
+  if (!confirm("¿Eliminar el pedido?")) return;
 
   $.ajax({
-    url: `${API.reservas}/${id}`,
+    url: `${API.pedido}/${id}`,
     method: "DELETE"
   })
     .done(function () {
-      showAlert("success", "Reserva eliminada");
+      showAlert("success", "Pedido eliminado");
+      cargarPedidos();
     })
     .fail(function (xhr) {
-      showAlert("danger", parseApiError(xhr, "Error eliminando reserva"));
+      showAlert("danger", parseApiError(xhr, "Error eliminando pedido"));
     });
 }
 
-function renderReservas(reservas) {
+function renderPedidos(pedidos) {
   const usuariosMap = construirUsuariosMap();
-  const rows = (reservas || []).map(function (r) {
-    const h = r.horario || {};
-    const snap = h.instalacionSnapshot || {};
-    const usuarioNombre = usuariosMap.get(r.usuarioId) || r.usuarioId;
-
-    const dia = h.dia || "";
-    const tramo = `${h.horaInicio || ""} - ${h.horaFin || ""}`;
-    const instalacion = snap.nombre ? `${snap.nombre} (${snap.ciudad || ""})` : (snap.instalacionId || "");
+  const rows = (pedidos || []).map(function (p) {
+    const usuarioNombre = usuariosMap.get(p.usuarioId) || p.usuarioId;
+    const fecha = p.fechaReserva ? new Date(p.fechaReserva).toLocaleDateString() : "";
 
     return `
       <tr>
-        <td>${escapeHtml(dia)}</td>
-        <td>${escapeHtml(tramo)}</td>
-        <td>${escapeHtml(instalacion)}</td>
+        <td>${escapeHtml(fecha)}</td>
         <td>${escapeHtml(usuarioNombre)}</td>
         <td class="text-end">
-          <button class="btn btn-sm btn-outline-danger" data-action="del-res" data-id="${r.id}">
+          <button class="btn btn-sm btn-outline-danger" data-action="del-ped" data-id="${p.id}">
             Eliminar
           </button>
         </td>
@@ -403,11 +324,11 @@ function renderReservas(reservas) {
     `;
   }).join("");
 
-  $("#tablaReservas").html(rows || `<tr><td colspan="5" class="text-center text-muted">Sin datos</td></tr>`);
+  $("#tablaPedidos").html(rows || `<tr><td colspan="3" class="text-center text-muted">Sin datos</td></tr>`);
 
-  $("#tablaReservas button[data-action='del-res']").off("click").on("click", function () {
+  $("#tablaPedidos button[data-action='del-ped']").off("click").on("click", function () {
     const id = $(this).data("id");
-    eliminarReserva(id);
+    eliminarPedido(id);
   });
 }
 

@@ -6,32 +6,32 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iesvdc.dam.acceso.model.Instalacion;
-import com.iesvdc.dam.acceso.repository.InstalacionRepository;
+import com.iesvdc.dam.acceso.model.Camiseta;
+import com.iesvdc.dam.acceso.repository.CamisetaRepository;
 import com.iesvdc.dam.acceso.web.NotFoundException;
 
 @Service
 public class InstalacionService {
     
     @Autowired
-    InstalacionRepository instalacionRepository;
+    CamisetaRepository instalacionRepository;
 
-    public List<Instalacion> findAll(){
+    public List<Camiseta> findAll(){
         return instalacionRepository.findAll();
     }
 
-    public Optional<Instalacion> findById(String id){
+    public Optional<Camiseta> findById(String id){
         return instalacionRepository.findById(id);
     }
 
-    public Instalacion save(Instalacion instalacion){
+    public Camiseta save(Camiseta instalacion){
         if (instalacion.getId().length()<5) {
             instalacion.setId(null);
         }
         return instalacionRepository.save(instalacion);
     }
 
-    public void delete(Instalacion instalacion){
+    public void delete(Camiseta instalacion){
         if (instalacion.getId()!=null){
             deleteById(instalacion.getId());
         } else {
@@ -49,8 +49,8 @@ public class InstalacionService {
         }
     }
 
-    public Instalacion updateById(String id, Instalacion instalacion){
-        Optional<Instalacion> oInstalacion = findById(id);
+    public Camiseta updateById(String id, Camiseta instalacion){
+        Optional<Camiseta> oInstalacion = findById(id);
         if(oInstalacion.isPresent()){
             instalacion.setId(id);
             return instalacionRepository.save(instalacion);
@@ -60,7 +60,7 @@ public class InstalacionService {
         }
     }
 
-    public Instalacion updateById(Instalacion oldInstalacion, Instalacion instalacion){
+    public Camiseta updateById(Camiseta oldInstalacion, Camiseta instalacion){
         return updateById(oldInstalacion.getId(), instalacion);
     }
 
