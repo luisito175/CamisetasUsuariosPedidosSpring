@@ -22,9 +22,16 @@ function wireEvents() {
     }
   });
 
+  
+
   $("#formUsuario").on("submit", function (e) {
     e.preventDefault();
-    crearUsuario();
+    const editId = $("#btnGuardarUsuario").data("edit-id");
+    if (editId) {
+      actualizarUsuario(editId);
+    } else {
+      crearUsuario();
+    }
   });
 
   $("#formPedido").on("submit", function (e) {
@@ -119,10 +126,10 @@ function renderCamisetas(camisetas) {
         <td>${parseFloat(c.precio).toFixed(2)}€</td>
         <td>${c.stock}</td>
         <td class="text-end">
-          <button class="btn btn-sm btn-outline-warning" data-action="edit-cam" data-id="${c.id}">
+          <button class="btn btn-sm btn-outline-warning" data-action="edit-user" data-id="${c.id}">
             Editar
           </button>
-          <button class="btn btn-sm btn-outline-danger" data-action="del-cam" data-id="${c.id}">
+          <button class="btn btn-sm btn-outline-danger" data-action="del-user" data-id="${c.id}">
             Eliminar
           </button>
         </td>
@@ -266,8 +273,14 @@ function renderUsuarios(usuarios) {
       <tr>
         <td>${escapeHtml(u.nombre)}</td>
         <td>${escapeHtml(u.email)}</td>
+        <td>${escapeHtml(u.password)}</td>
         <td>${escapeHtml(u.rol)}</td>
         <td class="text-end">
+
+          <button class="btn btn-sm btn-outline-warning" data-action="edit-user" data-id="${u.id}">
+            Editar
+          </button>
+
           <button class="btn btn-sm btn-outline-danger" data-action="del-user" data-id="${u.id}">
             Eliminar
           </button>
@@ -276,7 +289,13 @@ function renderUsuarios(usuarios) {
     `;
   }).join("");
 
-  $("#tablaUsuarios").html(rows || `<tr><td colspan="3" class="text-center text-muted">Sin datos</td></tr>`);
+  $("#tablaUsuarios").html(rows || `<tr><td colspan="5" class="text-center text-muted">Sin datos</td></tr>`);
+
+  
+  $("#tablaUsuarios button[data-action='edit-user']").off("click").on("click", function () {
+    const id = $(this).data("id");
+    editarUsuario(id);
+  });
 
   $("#tablaUsuarios button[data-action='del-user']").off("click").on("click", function () {
     const id = $(this).data("id");
@@ -314,6 +333,51 @@ function crearUsuario() {
     })
     .fail(function (xhr) {
       showAlert("danger", parseApiError(xhr, "Error creando usuario"));
+    });
+}
+
+function editarUsuario(id) {
+  
+  const usuarioRow = $(`button[data-action='edit-user'][data-id='${id}']`).closest("tr");
+  
+  const nombre = usuarioRow.find("td").eq(0).text().trim();
+  const email = usuarioRow.find("td").eq(1).text().trim();
+  const password = usuarioRow.find("td").eq(2).text().trim();
+  const rol = usuarioRow.find("td").eq(3).text().trim();
+
+  
+  $("#userNombre").val(nombre);
+  $("#userEmail").val(email);
+  $("#userPassword").val(password);
+  $("#userRol").val(rol);
+
+
+  
+  $("#btnGuardarUsuario").text("Actualizar").data("edit-id", id);
+}
+
+function actualizarUsuario(id) {
+  const payload = {
+    nombre: $("#userNombre").val().trim(),
+    email: $("#userEmail").val().trim(),
+    password: $("#userPassword").val().trim(),
+    rol: $("#userRol").val().trim()
+  };
+
+  $.ajax({
+    url: `${API.usuarios}/${id}`,
+    method: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify(payload)
+  })
+    .done(function () {
+      showAlert("success", "Usuario actualizado");
+      $("#formUsuario")[0].reset();
+      $("#btnGuardarUsuario").text("Añadir").data("edit-id", null);
+      cargarUsuarios();
+    })
+    .fail(function (xhr) {
+      showAlert("danger", parseApiError(xhr, "Error actualizando usuario"));
     });
 }
 

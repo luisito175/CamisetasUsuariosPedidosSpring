@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +20,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Usuario {
 
   @Id
-  private String id;
+  @JsonSerialize(using = ToStringSerializer.class)
+  private ObjectId id;
 
   @NotBlank(message = "nombre es obligatorio")
   private String nombre;
@@ -30,5 +34,5 @@ public class Usuario {
   private String password;
 
   @NotBlank(message = "El rol es obligatorio")
-  private String Rol;
+  private String rol;
 }
