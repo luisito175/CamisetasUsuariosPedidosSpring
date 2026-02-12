@@ -6,6 +6,9 @@ const API = {
   pedido: "/api/reservas"
 };
 
+let lastPedidos = [];
+let carritoPedido = [];
+
 
 /* =========================
    Eventos de formularios
@@ -37,6 +40,10 @@ function wireEvents() {
   $("#formPedido").on("submit", function (e) {
     e.preventDefault();
     crearPedido();
+  });
+
+  $("#btnAddCamiseta").on("click", function () {
+    agregarCamisetaAlCarrito();
   });
 
   // Menú de navegación
@@ -154,7 +161,9 @@ function renderCamisetas(camisetas) {
 
 function rellenarSelectCamisetas(camisetas) {
   const opts = (camisetas || []).map(c =>
-    `<option value="${c.id}">${escapeHtml(c.nombre)} (${escapeHtml(c.talla)})</option>`
+    `<option value="${c.id}" data-nombre="${escapeHtml(c.nombre)}" data-talla="${escapeHtml(c.talla)}" data-color="${escapeHtml(c.color)}" data-precio="${c.precio}">
+      ${escapeHtml(c.nombre)} (${escapeHtml(c.talla)} - ${escapeHtml(c.color)})
+    </option>`
   ).join("");
 
   // Selects: filtros y alta
@@ -412,9 +421,15 @@ function cargarPedidos() {
 }
 
 function crearPedido() {
+  if (carritoPedido.length === 0) {
+    showAlert("warning", "Añade camisetas al carrito");
+    return;
+  }
+
   const payload = {
     usuarioId: $("#resUsuario").val(),
-    fechaReserva: new Date().toISOString()
+    fechaCreacion: new Date().toISOString(),
+    camisetas: carritoPedido
   };
 
   $.ajax({
@@ -426,6 +441,8 @@ function crearPedido() {
     .done(function () {
       showAlert("success", "Pedido creado");
       $("#formPedido")[0].reset();
+      carritoPedido = [];
+      renderCarrito();
       cargarPedidos();
     })
     .fail(function (xhr) {
@@ -453,12 +470,14 @@ function renderPedidos(pedidos) {
   const usuariosMap = construirUsuariosMap();
   const rows = (pedidos || []).map(function (p) {
     const usuarioNombre = usuariosMap.get(p.usuarioId) || p.usuarioId;
-    const fecha = p.fechaReserva ? new Date(p.fechaReserva).toLocaleDateString() : "";
+    const fecha = p.fechaCreacion ? new Date(p.fechaCreacion).toLocaleDateString() : "";
+    const totalItems = (p.camisetas || []).reduce((acc, it) => acc + (it.cantidad || 0), 0);
 
     return `
       <tr>
         <td>${escapeHtml(fecha)}</td>
         <td>${escapeHtml(usuarioNombre)}</td>
+        <td>${totalItems}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-outline-danger" data-action="del-ped" data-id="${p.id}">
             Eliminar
@@ -468,11 +487,77 @@ function renderPedidos(pedidos) {
     `;
   }).join("");
 
-  $("#tablaPedidos").html(rows || `<tr><td colspan="3" class="text-center text-muted">Sin datos</td></tr>`);
+  $("#tablaPedidos").html(rows || `<tr><td colspan="4" class="text-center text-muted">Sin datos</td></tr>`);
 
   $("#tablaPedidos button[data-action='del-ped']").off("click").on("click", function () {
     const id = $(this).data("id");
     eliminarPedido(id);
+  });
+}
+
+function agregarCamisetaAlCarrito() {
+  const $opt = $("#resCamiseta option:selected");
+  if ($opt.length === 0) {
+    showAlert("warning", "Seleccione una camiseta");
+    return;
+  }
+
+  const item = {
+    camisetaId: $opt.val(),
+    nombre: $opt.data("nombre"),
+    talla: $opt.data("talla"),
+    color: $opt.data("color"),
+    precio: parseFloat($opt.data("precio")),
+    cantidad: 1
+  };
+
+  const existente = carritoPedido.find(c => c.camisetaId === item.camisetaId);
+  if (existente) {
+    existente.cantidad += 1;
+  } else {
+    carritoPedido.push(item);
+  }
+  renderCarrito();
+}
+
+function renderCarrito() {
+  const rows = carritoPedido.map((it, idx) => {
+    const label = `${it.nombre} (${it.talla} - ${it.color})`;
+    return `
+      <tr>
+        <td>${escapeHtml(label)}</td>
+        <td>
+          <div class="btn-group btn-group-sm" role="group">
+            <button class="btn btn-outline-secondary" data-action="dec-car" data-index="${idx}">-</button>
+            <span class="px-2">${it.cantidad}</span>
+            <button class="btn btn-outline-secondary" data-action="inc-car" data-index="${idx}">+</button>
+          </div>
+        </td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-danger" data-action="del-car" data-index="${idx}">Quitar</button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  $("#tablaCarrito").html(rows || `<tr><td colspan="3" class="text-center text-muted">Carrito vacío</td></tr>`);
+
+  $("#tablaCarrito button[data-action='inc-car']").off("click").on("click", function () {
+    const idx = $(this).data("index");
+    carritoPedido[idx].cantidad += 1;
+    renderCarrito();
+  });
+
+  $("#tablaCarrito button[data-action='dec-car']").off("click").on("click", function () {
+    const idx = $(this).data("index");
+    carritoPedido[idx].cantidad = Math.max(1, carritoPedido[idx].cantidad - 1);
+    renderCarrito();
+  });
+
+  $("#tablaCarrito button[data-action='del-car']").off("click").on("click", function () {
+    const idx = $(this).data("index");
+    carritoPedido.splice(idx, 1);
+    renderCarrito();
   });
 }
 

@@ -161,11 +161,31 @@
             <label class="form-label">Usuario</label>
             <select id="resUsuario" class="form-select" required></select>
           </div>
+          <div class="col-md-4">
+            <label class="form-label">Camiseta</label>
+            <select id="resCamiseta" class="form-select"></select>
+          </div>
+          <div class="col-md-2 d-grid">
+            <button id="btnAddCamiseta" class="btn btn-outline-primary" type="button">Añadir</button>
+          </div>
           
           <div class="col-md-2 d-grid">
             <button class="btn btn-success" type="submit">Crear pedido</button>
           </div>
         </form>
+
+        <div class="table-responsive mt-3">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Camiseta</th>
+                <th>Cantidad</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaCarrito"></tbody>
+          </table>
+        </div>
 
         <hr>
 
@@ -175,6 +195,7 @@
               <tr>
                 <th>Fecha</th>
                 <th>Usuario</th>
+                <th>Camisetas</th>
                 <th class="text-end">Acciones</th>
               </tr>
             </thead>
