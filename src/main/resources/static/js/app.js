@@ -266,6 +266,7 @@ function renderUsuarios(usuarios) {
       <tr>
         <td>${escapeHtml(u.nombre)}</td>
         <td>${escapeHtml(u.email)}</td>
+        <td>${escapeHtml(u.rol)}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-outline-danger" data-action="del-user" data-id="${u.id}">
             Eliminar
@@ -296,7 +297,8 @@ function crearUsuario() {
   const payload = {
     nombre: $("#userNombre").val().trim(),
     email: $("#userEmail").val().trim(),
-    password: $("#userPassword").val().trim()
+    password: $("#userPassword").val().trim(),
+    rol: $("#userRol").val().trim()
   };
 
   $.ajax({

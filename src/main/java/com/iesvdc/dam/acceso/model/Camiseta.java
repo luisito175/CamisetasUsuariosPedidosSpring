@@ -41,7 +41,7 @@ public class Camiseta {
 
 
 
-  // Constructor necesario para maestro-detalle Horario->Instalación
+  
   public Camiseta(String id){
     this.id = new ObjectId(id);
     this.nombre="Instalación sin nombre";

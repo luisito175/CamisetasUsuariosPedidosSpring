@@ -28,4 +28,7 @@ public class Usuario {
 
   @NotBlank(message = "la contraseña es obligatoria")
   private String password;
+
+  @NotBlank(message = "El rol es obligatorio")
+  private String Rol;
 }
