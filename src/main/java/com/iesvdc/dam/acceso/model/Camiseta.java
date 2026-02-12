@@ -1,6 +1,7 @@
 package com.iesvdc.dam.acceso.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +26,8 @@ public class Camiseta {
   @NotBlank(message = "El nombre es obligatorio")
   private String nombre;
 
-  @NotBlank(message = "La talla es obligatoria")
-  private String talla;
+  @NotNull(message = "La talla es obligatoria")
+  private Talla talla;
 
   @NotBlank(message = "El color es obligatorio")
   private String color;
@@ -45,10 +46,19 @@ public class Camiseta {
   public Camiseta(String id){
     this.id = new ObjectId(id);
     this.nombre="Instalación sin nombre";
-    this.talla="Instalación sin talla";
+    this.talla=Talla.M;
     this.color="Instalación sin color";
     this.precio=0.0;
     this.stock = 0;
+  }
+
+  public enum Talla {
+    XS,
+    S,
+    M,
+    L,
+    XL,
+    XXL
   }
 
 }

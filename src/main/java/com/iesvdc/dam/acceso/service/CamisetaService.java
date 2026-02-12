@@ -15,15 +15,15 @@ import com.iesvdc.dam.acceso.web.NotFoundException;
 public class CamisetaService {
     
     @Autowired
-    CamisetaRepository CamisetaRepository;
+    private CamisetaRepository camisetaRepository;
 
     public List<Camiseta> findAll(){
-        return CamisetaRepository.findAll();
+        return camisetaRepository.findAll();
     }
 
     public Optional<Camiseta> findById(String id){
         try {
-            return CamisetaRepository.findById(new ObjectId(id));
+            return camisetaRepository.findById(new ObjectId(id));
         } catch (IllegalArgumentException e) {
             return Optional.empty();
         }
@@ -31,7 +31,7 @@ public class CamisetaService {
 
     public Camiseta save(Camiseta camiseta){
         // Si el id es null, MongoDB lo generará automáticamente
-        return CamisetaRepository.save(camiseta);
+        return camisetaRepository.save(camiseta);
     }
 
     public void delete(Camiseta camiseta){
@@ -39,16 +39,16 @@ public class CamisetaService {
             deleteById(camiseta.getId().toString());
         } else {
             throw new NotFoundException(
-                "Instalación sin ID, no puedo buscarla.");
+                "Camiseta sin ID, no puedo buscarla.");
         }
     }
 
     public void deleteById(String id){
         if (findById(id).isPresent()){
-            CamisetaRepository.deleteById(new ObjectId(id));
+            camisetaRepository.deleteById(new ObjectId(id));
         } else {
             throw new NotFoundException(
-                "Instalación no encontrada: " + id);
+                "Camiseta no encontrada: " + id);
         }
     }
 
@@ -56,10 +56,10 @@ public class CamisetaService {
         Optional<Camiseta> ocamiseta = findById(id);
         if(ocamiseta.isPresent()){
             camiseta.setId(new ObjectId(id));
-            return CamisetaRepository.save(camiseta);
+            return camisetaRepository.save(camiseta);
         } else {
             throw new NotFoundException(
-                "Instalación no encontrada: " + id);
+                "Camiseta no encontrada: " + id);
         }
     }
 

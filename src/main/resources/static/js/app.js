@@ -133,10 +133,10 @@ function renderCamisetas(camisetas) {
         <td>${parseFloat(c.precio).toFixed(2)}€</td>
         <td>${c.stock}</td>
         <td class="text-end">
-          <button class="btn btn-sm btn-outline-warning" data-action="edit-user" data-id="${c.id}">
+          <button class="btn btn-sm btn-outline-warning" data-action="edit-cam" data-id="${c.id}">
             Editar
           </button>
-          <button class="btn btn-sm btn-outline-danger" data-action="del-user" data-id="${c.id}">
+          <button class="btn btn-sm btn-outline-danger" data-action="del-cam" data-id="${c.id}">
             Eliminar
           </button>
         </td>

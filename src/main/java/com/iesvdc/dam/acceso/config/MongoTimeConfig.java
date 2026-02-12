@@ -7,7 +7,8 @@ import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
-import com.mongodb.lang.NonNull;
+import com.iesvdc.dam.acceso.model.Camiseta.Talla;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -16,11 +17,16 @@ import java.util.List;
 public class MongoTimeConfig {
 
   @Bean
+  @SuppressWarnings("null")
   public MongoCustomConversions mongoCustomConversions() {
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    List converters = List.of(new LocalTimeToString(), new StringToLocalTime());
-    
-    return new MongoCustomConversions(converters);    
+    List<?> converters = List.of(
+      new LocalTimeToString(),
+      new StringToLocalTime(),
+      new TallaToString(),
+      new StringToTalla()
+    );
+
+    return new MongoCustomConversions(converters);
   }
 
   @WritingConverter
@@ -34,6 +40,24 @@ public class MongoTimeConfig {
   static class StringToLocalTime implements Converter<String, LocalTime> {
     @Override public LocalTime convert(@NonNull String source) {
       return LocalTime.parse(source);
+    }
+  }
+
+  @WritingConverter
+  static class TallaToString implements Converter<Talla, String> {
+    @Override public String convert(@NonNull Talla source) {
+      return source.name();
+    }
+  }
+
+  @ReadingConverter
+  static class StringToTalla implements Converter<String, Talla> {
+    @Override public Talla convert(@NonNull String source) {
+      try {
+        return Talla.valueOf(source.trim().toUpperCase());
+      } catch (Exception ex) {
+        return Talla.M;
+      }
     }
   }
 }
