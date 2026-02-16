@@ -2,6 +2,68 @@
 
 En este capítulo se aborda el desarrollo de una aplicación web completa basada en una **arquitectura cliente–servidor**, utilizando tecnologías ampliamente empleadas en el desarrollo de aplicaciones modernas. El objetivo es integrar un **backend REST** desarrollado con Spring Boot y MongoDB con un **frontend ligero** construido con HTML5, Bootstrap y JavaScript, siguiendo el modelo de **Single Page Application (SPA) simple**, sin necesidad de herramientas de construcción complejas.
 
+## Arranque del DevContainer
+
+1. Abre el proyecto en VS Code.
+2. Ejecuta **Dev Containers: Reopen in Container**.
+3. Espera a que el contenedor termine de construir.
+
+> Nota: el contenedor ya incluye Java 21 y Maven Wrapper (`./mvnw`).
+
+## Cómo iniciar el backend
+
+Desde la raíz del proyecto:
+
+```bash
+./mvnw spring-boot:run
+```
+
+El backend quedará disponible en `http://localhost:8080`.
+
+## Cómo comprobar endpoints (curl o Postman)
+
+Ejemplos con `curl`:
+
+```bash
+# Listar camisetas
+curl -s http://localhost:8080/api/instalaciones
+
+# Crear camiseta
+curl -s -X POST http://localhost:8080/api/instalaciones \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Camiseta Azul","talla":"M","color":"Azul","precio":19.99,"stock":10}'
+
+# Listar usuarios
+curl -s http://localhost:8080/api/usuarios
+
+# Crear usuario
+curl -s -X POST http://localhost:8080/api/usuarios \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Ana","email":"ana@email.com","password":"1234","rol":"admin"}'
+
+# Listar pedidos
+curl -s http://localhost:8080/api/reservas
+```
+
+En Postman, importa los mismos endpoints con método y body JSON equivalente.
+
+## Pasos para probar la UI (capturas)
+
+1. Abre `http://localhost:8080`.
+2. Ve a **Camisetas**:
+  - Crea 2–3 camisetas con distintas tallas y colores.
+3. Ve a **Usuarios**:
+  - Crea 1–2 usuarios con rol.
+4. Ve a **Pedidos**:
+  - Selecciona un usuario.
+  - Añade camisetas al carrito con el botón **Añadir**.
+  - Ajusta cantidades (+ / -) y elimina alguna si quieres.
+  - Pulsa **Crear pedido**.
+5. Haz capturas de:
+  - Lista de camisetas.
+  - Carrito de pedido con varias camisetas.
+  - Tabla de pedidos creada.
+
 
 ## Arquitectura de la aplicación
 
