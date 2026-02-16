@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Document(collection = "pedidos")
-public class Reserva {
+public class Pedido {
 
   @Id
   @JsonSerialize(using = ToStringSerializer.class)

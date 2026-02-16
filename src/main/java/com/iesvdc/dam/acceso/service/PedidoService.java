@@ -8,22 +8,22 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iesvdc.dam.acceso.model.Reserva;
+import com.iesvdc.dam.acceso.model.Pedido;
 import com.iesvdc.dam.acceso.repository.ReservaRepository;
 import com.iesvdc.dam.acceso.web.BadRequestException;
 import com.iesvdc.dam.acceso.web.NotFoundException;
 
 @Service
-public class ReservaService {
+public class PedidoService {
     
     @Autowired 
     ReservaRepository reservaRepository;
 
-    public List<Reserva> findAll(){
+    public List<Pedido> findAll(){
         return reservaRepository.findAll();
     }
 
-    public Optional<Reserva> findById(String id) {
+    public Optional<Pedido> findById(String id) {
         try {
             return reservaRepository.findById(new ObjectId(id));
         } catch (IllegalArgumentException e) {
@@ -34,7 +34,7 @@ public class ReservaService {
     /**
     * Guardar pedido
     */
-    public Reserva add(Reserva reserva){
+    public Pedido add(Pedido reserva){
         if (reserva.getFechaCreacion() == null) {
             reserva.setFechaCreacion(Instant.now());
         }
@@ -49,8 +49,8 @@ public class ReservaService {
         }
     }
 
-    public Reserva updateById(String id, Reserva reserva){
-        Optional<Reserva> oReserva = findById(id);
+    public Pedido updateById(String id, Pedido reserva){
+        Optional<Pedido> oReserva = findById(id);
         if(oReserva.isPresent()){
             reserva.setId(new ObjectId(id));
             if (reserva.getFechaCreacion() == null) {

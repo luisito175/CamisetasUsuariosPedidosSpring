@@ -14,37 +14,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.iesvdc.dam.acceso.model.Reserva;
-import com.iesvdc.dam.acceso.service.ReservaService;
+import com.iesvdc.dam.acceso.model.Pedido;
+import com.iesvdc.dam.acceso.service.PedidoService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/reservas")
-public class ReservaController {
+public class PedidoController {
 
   @Autowired
-  private ReservaService reservaService;
+  private PedidoService reservaService;
 
   @GetMapping({"", "/"})
-  public List<Reserva> findAll() {
+  public List<Pedido> findAll() {
     return reservaService.findAll();
   }
 
   @GetMapping("/{id}")
-  public Reserva findById(@PathVariable String id) {
+  public Pedido findById(@PathVariable String id) {
     return reservaService.findById(id).orElseThrow(() ->
       new com.iesvdc.dam.acceso.web.NotFoundException("Pedido no encontrado: " + id));
   }
 
   @PostMapping({"", "/"})
   @ResponseStatus(HttpStatus.CREATED)
-  public Reserva save(@Valid @RequestBody Reserva reserva) {
+  public Pedido save(@Valid @RequestBody Pedido reserva) {
     return reservaService.add(reserva);
   }
 
   @PutMapping("/{id}")
-  public Reserva update(@PathVariable String id, @Valid @RequestBody Reserva reserva) {
+  public Pedido update(@PathVariable String id, @Valid @RequestBody Pedido reserva) {
     return reservaService.updateById(id, reserva);
   }
 
