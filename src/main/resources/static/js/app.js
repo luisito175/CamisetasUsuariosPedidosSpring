@@ -46,6 +46,10 @@ function wireEvents() {
     agregarCamisetaAlCarrito();
   });
 
+  $("#btnVolverPedidos").on("click", function () {
+    $.controller.activate("#panel_pedidos");
+  });
+
   // Menú de navegación
   $("#menu_camisetas").on("click", function () {
     $(".panel").addClass("d-none");
@@ -479,6 +483,9 @@ function renderPedidos(pedidos) {
         <td>${escapeHtml(usuarioNombre)}</td>
         <td>${totalItems}</td>
         <td class="text-end">
+          <button class="btn btn-sm btn-outline-secondary" data-action="ver-ped" data-id="${p.id}">
+            Ver
+          </button>
           <button class="btn btn-sm btn-outline-danger" data-action="del-ped" data-id="${p.id}">
             Eliminar
           </button>
@@ -493,6 +500,44 @@ function renderPedidos(pedidos) {
     const id = $(this).data("id");
     eliminarPedido(id);
   });
+
+  $("#tablaPedidos button[data-action='ver-ped']").off("click").on("click", function () {
+    const id = $(this).data("id");
+    mostrarDetallePedido(id);
+  });
+}
+
+function mostrarDetallePedido(id) {
+  $.getJSON(`${API.pedido}/${id}`)
+    .done(function (pedido) {
+      const usuariosMap = construirUsuariosMap();
+      const fecha = pedido.fechaCreacion ? new Date(pedido.fechaCreacion).toLocaleDateString() : "";
+      const usuarioNombre = usuariosMap.get(pedido.usuarioId) || pedido.usuarioId;
+      const totalItems = (pedido.camisetas || []).reduce((acc, it) => acc + (it.cantidad || 0), 0);
+
+      $("#detallePedidoFecha").text(fecha);
+      $("#detallePedidoUsuario").text(usuarioNombre);
+      $("#detallePedidoTotal").text(totalItems);
+
+      const rows = (pedido.camisetas || []).map(it => `
+        <tr>
+          <td>${escapeHtml(it.nombre)}</td>
+          <td>${escapeHtml(it.talla)}</td>
+          <td>${escapeHtml(it.color)}</td>
+          <td>${parseFloat(it.precio).toFixed(2)}€</td>
+          <td>${it.cantidad}</td>
+        </tr>
+      `).join("");
+
+      $("#tablaPedidoDetalle").html(rows || `<tr><td colspan="5" class="text-center text-muted">Sin detalles</td></tr>`);
+
+      // Mostrar panel detalle con animación
+      $(".panel").hide(200);
+      $("#panel_pedido_detalle").removeClass("d-none").hide().fadeIn(200);
+    })
+    .fail(function (xhr) {
+      showAlert("danger", parseApiError(xhr, "Error cargando detalle del pedido"));
+    });
 }
 
 function agregarCamisetaAlCarrito() {

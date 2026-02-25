@@ -35,7 +35,11 @@ public class PedidoService {
     * Guardar pedido
     */
     public Pedido add(Pedido reserva){
-        if (reserva.getFechaCreacion() == null) {
+        if (reserva.getCamisetas() == null || reserva.getCamisetas().isEmpty() ||
+            reserva.getCamisetas().stream().anyMatch(i -> i.getCantidad() == null || i.getCantidad() <= 0)) {
+            throw new BadRequestException("Items o cantidad inválida");
+        }
+        if (reserva.getFechaCreacion() == null ) {
             reserva.setFechaCreacion(Instant.now());
         }
         return reservaRepository.save(reserva);

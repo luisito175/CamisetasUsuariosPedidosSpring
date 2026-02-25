@@ -215,6 +215,59 @@
     </div>
   </section>
 
+  <!-- Pedido detalle -->
+  <section id="panel_pedido_detalle" class="panel">
+    <div class="card shadow-sm">
+      <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+        <span>Detalle de pedido</span>
+        <button id="btnVolverPedidos" class="btn btn-sm btn-outline-secondary" type="button">Volver</button>
+      </div>
+      <div class="card-body">
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="card border-0 bg-light h-100">
+              <div class="card-body py-2">
+                <div class="text-muted small">Fecha</div>
+                <div class="fw-semibold" id="detallePedidoFecha">-</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="card border-0 bg-light h-100">
+              <div class="card-body py-2">
+                <div class="text-muted small">Usuario</div>
+                <div class="fw-semibold" id="detallePedidoUsuario">-</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card border-0 bg-light h-100">
+              <div class="card-body py-2">
+                <div class="text-muted small">Total items</div>
+                <div class="fw-semibold"><span id="detallePedidoTotal">0</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>Camiseta</th>
+                <th>Talla</th>
+                <th>Color</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody id="tablaPedidoDetalle"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
